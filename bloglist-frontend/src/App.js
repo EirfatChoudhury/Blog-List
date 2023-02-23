@@ -63,7 +63,6 @@ const App = () => {
       setBlogs(blogs.concat(returnedBlog))
       setTitle("")
       setAuthor("")
-      setBlogs("")
       console.log("Added post with properties:", returnedBlog)
     }
     catch (exception) {

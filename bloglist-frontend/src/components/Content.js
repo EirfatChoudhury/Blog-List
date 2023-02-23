@@ -2,9 +2,7 @@ import BlogForm from './BlogForm'
 import LogoutButton from "./LogoutButton"
 import Blog from "./Blog"
 
-const Content = ( {user, logoutServiceLogout, handleBlogAdd, setTitle, setAuthor, setUrl, blogs} ) => {
-    const blogsToShow = Array.from(blogs)
-    
+const Content = ( {user, logoutServiceLogout, handleBlogAdd, setTitle, setAuthor, setUrl, blogs} ) => {    
     const contentToShow =
         <div>
         <h2>Blogs</h2>
@@ -12,7 +10,7 @@ const Content = ( {user, logoutServiceLogout, handleBlogAdd, setTitle, setAuthor
 
         <BlogForm handleFunction={handleBlogAdd} setTitle={setTitle} setAuthor={setAuthor} setUrl={setUrl}/>
 
-        {blogsToShow.map(blog => <Blog key={blog.id} blog={blog} />)}
+        {blogs.map(blog => <Blog key={blog.id} blog={blog} />)}
         </div>
     
     return contentToShow
