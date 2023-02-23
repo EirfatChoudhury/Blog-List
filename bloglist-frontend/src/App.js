@@ -64,7 +64,7 @@ const App = () => {
       setTitle("")
       setAuthor("")
       setBlogs("")
-      console.log("Added post with properties", returnedBlog)
+      console.log("Added post with properties:", returnedBlog)
     }
     catch (exception) {
       console.log('Failed to create blog post')
@@ -73,6 +73,8 @@ const App = () => {
         console.log(null)
       }, 5000)
     }
+
+    console.log("Blogs:", blogs)
   }
 
   const loginForm = () => (
