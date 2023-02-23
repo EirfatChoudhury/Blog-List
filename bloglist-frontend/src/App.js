@@ -1,37 +1,39 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import LoginForm from './components/LoginForm'
 import Content from './components/Content'
 import Notification from './components/Notification'
+import Togglable from './components/Togglable'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import logoutService from './services/logout'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [username, setUsername] = useState('') 
-  const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [title, setTitle] = useState('') 
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
   const [notifMessage, setNotifMessage] = useState(null)
   const [notifStyle, setNotifStyle] = useState(null)
 
-  const handleLogin = async (event) => {
-    event.preventDefault()
-    
-    try {
-      const user = await loginService.login({ username, password })
+  const blogFormRef = useRef()
 
+  useEffect(() => {blogService.getAll().then(blogs => setBlogs(blogs))}, [])
+
+  useEffect(() => {
+    const loggedUserJSON = window.localStorage.getItem('loggedBloglistUser')
+    if (loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON)
+      setUser(user)
+      blogService.setToken(user.token)
+    }}, [])
+
+  const handleLogin = async (userDetails) => {
+    try {
+      const user = await loginService.login(userDetails)
       window.localStorage.setItem(
         'loggedBloglistUser', JSON.stringify(user)
       )
-
       blogService.setToken(user.token)
       setUser(user)
-      setUsername('')
-      setPassword('')
-      console.log("user sent")
+      console.log(`user with username ${userDetails.username} successfully logged in`)
     }
     catch (exception) {
       console.log('Wrong credentials')
@@ -42,39 +44,19 @@ const App = () => {
     }
   }
 
-  useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs( blogs )
-    )  
-  }, [])
-
-  useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem('loggedBloglistUser')
-    if (loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON)
-      setUser(user)
-      blogService.setToken(user.token)
-    }
-  }, [])
-
-  const handleBlogAdd = async (event) => {
-    event.preventDefault()
-
-    const newBlog = { title, author, url }
-
+  const addBlog = async (newBlog) => {
+    blogFormRef.current.toggleVisibility()
     try {
       const returnedBlog = await blogService.create(newBlog)
       setBlogs(blogs.concat(returnedBlog))
-      setTitle("")
-      setAuthor("")
-      console.log("Added post with properties:", returnedBlog)
+      console.log("Added blog with properties:", returnedBlog)
       setNotifMessage(`Successfully added ${newBlog.title} to Bloglist`)
       setNotifStyle("success")
     }
     catch (exception) {
       console.log('Failed to create blog post')
       console.log(exception)
-      setNotifMessage(`Failed to added ${newBlog.title} to Bloglist`)
+      setNotifMessage(`Failed to add ${newBlog.title} to Bloglist`)
       setNotifStyle("error")
     }
 
@@ -85,19 +67,47 @@ const App = () => {
 
   }
 
+  const increaseLikes = async (updatedBlog, id) => {
+    const tempBlogs = blogs.filter(blog => blog.id !== id)
+
+    try {
+      const returnedBlog = await blogService.update(updatedBlog, id)
+      setBlogs(tempBlogs.concat(returnedBlog))
+      console.log("Updated blog to", returnedBlog)
+    }
+    catch (exception) {
+      console.log('Failed to update blog post')
+      console.log(exception)
+    }
+  }
+
+  const deleteBlog = async (id) => {
+    try {
+      await blogService.del(id)
+      setBlogs(blogs.filter(blog => blog.id !== id))
+      console.log("Blog deleted")
+    }
+    catch (exception) {
+      console.log("Failed to delete blog")
+      console.log(exception)
+    }
+  }
+
   const loginForm = () => (
-    <LoginForm handleFunction={handleLogin} setUsername={setUsername} setPassword={setPassword}/>
+    <Togglable buttonLabel="login">
+      <LoginForm handleLogin={handleLogin}/>
+    </Togglable>
   )
 
   const loggedIn = () => (
     <Content 
       user={user} 
       logoutServiceLogout={logoutService.logout}
-      handleBlogAdd={handleBlogAdd} 
-      setTitle={setTitle} 
-      setAuthor={setAuthor} 
-      setUrl={setUrl}
+      addBlog={addBlog}
       blogs={blogs}
+      blogFormRef={blogFormRef}
+      increaseLikes={increaseLikes}
+      deleteBlog={deleteBlog}
     />
   )
 

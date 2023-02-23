@@ -1,6 +1,21 @@
-const BlogForm = ( {handleFunction, setTitle, setAuthor, setUrl} ) => (
+import { useState } from "react"
+
+const BlogForm = ( {createBlog} ) => {
+    const [title, setTitle] = useState("") 
+    const [author, setAuthor] = useState("")
+    const [url, setUrl] = useState("")
+
+    const addBlog = (event) => {
+        event.preventDefault()
+        createBlog({title, author, url})
+        setTitle(null)
+        setAuthor(null)
+        setUrl(null)
+    }
+    
+    return (
     <div>
-        <form onSubmit={handleFunction}>
+        <form onSubmit={addBlog}>
             <div>
                 title: <input onChange={({ target }) => setTitle(target.value)}></input>
             </div>
@@ -13,6 +28,7 @@ const BlogForm = ( {handleFunction, setTitle, setAuthor, setUrl} ) => (
             <button type="submit">create</button>
         </form>
     </div>
-)
+    )
+}
 
 export default BlogForm

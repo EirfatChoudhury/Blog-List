@@ -1,8 +1,21 @@
-const LoginForm = ( {handleFunction, setUsername, setPassword} ) => (
+import { useState } from "react"
+
+const LoginForm = ( {handleLogin} ) => {
+    const [username, setUsername] = useState('') 
+    const [password, setPassword] = useState('')
+
+    const login = (event) => {
+        event.preventDefault()
+        handleLogin({username, password})
+        setUsername(null)
+        setPassword(null)
+    }
+
+    return (
     <div>
         <h2>Log in to application</h2>
         <div>
-            <form onSubmit={handleFunction}>
+            <form onSubmit={login}>
                 <div>
                     username: <input onChange={({ target }) => setUsername(target.value)}></input>
                 </div>
@@ -13,6 +26,7 @@ const LoginForm = ( {handleFunction, setUsername, setPassword} ) => (
             </form>
         </div>
     </div>
-)
+    )
+}
 
 export default LoginForm
