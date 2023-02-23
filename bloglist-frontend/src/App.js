@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import LoginForm from './components/LoginForm'
 import Content from './components/Content'
+import Notification from './components/Notification'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import logoutService from './services/logout'
@@ -13,6 +14,8 @@ const App = () => {
   const [title, setTitle] = useState('') 
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
+  const [notifMessage, setNotifMessage] = useState(null)
+  const [notifStyle, setNotifStyle] = useState(null)
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -57,23 +60,29 @@ const App = () => {
   const handleBlogAdd = async (event) => {
     event.preventDefault()
 
+    const newBlog = { title, author, url }
+
     try {
-      const newBlog = { title, author, url }
       const returnedBlog = await blogService.create(newBlog)
       setBlogs(blogs.concat(returnedBlog))
       setTitle("")
       setAuthor("")
       console.log("Added post with properties:", returnedBlog)
+      setNotifMessage(`Successfully added ${newBlog.title} to Bloglist`)
+      setNotifStyle("success")
     }
     catch (exception) {
       console.log('Failed to create blog post')
       console.log(exception)
-      setTimeout(() => {
-        console.log(null)
-      }, 5000)
+      setNotifMessage(`Failed to added ${newBlog.title} to Bloglist`)
+      setNotifStyle("error")
     }
 
-    console.log("Blogs:", blogs)
+    setTimeout(() => {
+      setNotifMessage(null)
+      setNotifStyle(null)
+    }, 5000);
+
   }
 
   const loginForm = () => (
@@ -95,6 +104,7 @@ const App = () => {
   return (
     <div>
       <h2>Bloglist</h2>
+      <Notification message={notifMessage} style={notifStyle}/>
       {user === null ? loginForm() : loggedIn()}
     </div>
   )

@@ -1,0 +1,34 @@
+const Notification = ({ message, style }) => {
+    let notifStyle = {
+      color: "black",
+      background: "lightgrey",
+      fontSize: 20,
+      borderStyle: "solid",
+      borderRadius: 5,
+      padding: 10,
+      marginBottom: 10
+    }
+  
+    if (style === "success") {
+      notifStyle = {
+        color: "green"
+      }
+    }
+    else if (style === "error") {
+      notifStyle = {
+        color: "red"
+      }
+    }
+
+    if (message === null) {
+      return null
+    }
+  
+    return (
+      <div style={notifStyle}>
+        {message}
+      </div>
+    )
+}
+
+export default Notification
