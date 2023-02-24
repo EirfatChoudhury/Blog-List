@@ -1,4 +1,5 @@
 import Togglable from './Togglable'
+import PropTypes from 'prop-types'
 
 const Blog = ({blog, user, addLike, deleteThisBlog}) => {
   const blogStyle = {
@@ -35,8 +36,8 @@ const Blog = ({blog, user, addLike, deleteThisBlog}) => {
   }
 
   return (
-    <div style={blogStyle}>
-        Blog title: {blog.title} - Blog author: {blog.author}
+    <div style={blogStyle} className={blog}>
+        <p data-testid="title-author">Blog title: {blog.title} - Blog author: {blog.author}</p>
         <Togglable buttonLabel="view">
           <p>url: {blog.url}</p>
           <p>
@@ -53,3 +54,10 @@ const Blog = ({blog, user, addLike, deleteThisBlog}) => {
 }
 
 export default Blog
+
+Blog.propTypes = {
+  blog: PropTypes.object.isRequired,
+  user: PropTypes.object.isRequired,
+  addLike: PropTypes.func.isRequired,
+  deleteThisBlog: PropTypes.func.isRequired
+}
