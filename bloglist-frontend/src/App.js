@@ -38,10 +38,14 @@ const App = () => {
     catch (exception) {
       console.log('Wrong credentials')
       console.log(exception)
-      setTimeout(() => {
-        console.log(null)
-      }, 5000)
+      setNotifMessage(`Failed to login as ${userDetails.username}`)
+      setNotifStyle("error")
     }
+
+    setTimeout(() => {
+      setNotifMessage(null)
+      setNotifStyle(null)
+    }, 5000);
   }
 
   const addBlog = async (newBlog) => {

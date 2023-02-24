@@ -18,12 +18,12 @@ const LoginForm = ( {handleLogin} ) => {
         <div>
             <form onSubmit={login}>
                 <div>
-                    username: <input onChange={({ target }) => setUsername(target.value)}></input>
+                    username: <input id="username" onChange={({ target }) => setUsername(target.value)}></input>
                 </div>
                 <div>
-                    password: <input onChange={({ target }) => setPassword(target.value)}></input>
+                    password: <input id="password" onChange={({ target }) => setPassword(target.value)}></input>
                 </div>
-                <button type="submit">login</button>
+                <button id="login-button" type="submit">login</button>
             </form>
         </div>
     </div>
