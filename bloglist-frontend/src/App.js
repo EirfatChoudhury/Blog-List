@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 import LoginForm from './components/LoginForm'
 import Content from './components/Content'
 import Notification from './components/Notification'
@@ -10,8 +11,10 @@ import logoutService from './services/logout'
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
-  const [notifMessage, setNotifMessage] = useState(null)
   const [notifStyle, setNotifStyle] = useState(null)
+
+  const dispatch = useDispatch()
+  const notifMessage = useSelector(state => state)
 
   const blogFormRef = useRef()
 
@@ -38,12 +41,12 @@ const App = () => {
     catch (exception) {
       console.log('Wrong credentials')
       console.log(exception)
-      setNotifMessage(`Failed to login as ${userDetails.username}`)
+      dispatch({ type: 'CHANGE', payload: `Failed to login as ${userDetails.username}` })
       setNotifStyle("error")
     }
 
     setTimeout(() => {
-      setNotifMessage(null)
+      dispatch({ type: 'HIDE' })
       setNotifStyle(null)
     }, 5000);
   }
@@ -54,18 +57,18 @@ const App = () => {
       const returnedBlog = await blogService.create(newBlog)
       setBlogs(blogs.concat(returnedBlog))
       console.log("Added blog with properties:", returnedBlog)
-      setNotifMessage(`Successfully added ${newBlog.title} to Bloglist`)
+      dispatch({ type: 'CHANGE', payload: `Successfully added ${newBlog.title} to Bloglist` })
       setNotifStyle("success")
     }
     catch (exception) {
       console.log('Failed to create blog post')
       console.log(exception)
-      setNotifMessage(`Failed to add ${newBlog.title} to Bloglist`)
+      dispatch({ type: 'CHANGE', payload: `Failed to add ${newBlog.title} to Bloglist` })
       setNotifStyle("error")
     }
 
     setTimeout(() => {
-      setNotifMessage(null)
+      dispatch({ type: 'HIDE' })
       setNotifStyle(null)
     }, 5000);
 

@@ -4,11 +4,20 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
+import { createStore } from 'redux'
+import { Provider } from 'react-redux';
+import notificationReducer from './reducers/notificationReducer';
+
+const notifStore = createStore(notificationReducer)
+notifStore.subscribe(() => {
+  console.log('notif state:', notifStore.getState())
+})
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
+  <Provider store={notifStore}>
     <App />
-  </React.StrictMode>
+  </Provider>
 );
 
 // If you want to start measuring performance in your app, pass a function

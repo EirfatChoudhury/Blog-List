@@ -20,7 +20,7 @@ const Notification = ({ message, style }) => {
       }
     }
 
-    if (message === null) {
+    if (message === '') {
       return null
     }
   
