@@ -6,6 +6,8 @@ import PropTypes from 'prop-types'
 
 const Content = ( {user, logoutServiceLogout, addBlog, blogs, blogFormRef, increaseLikes, deleteBlog} ) => {    
     const byLikes = (b1, b2) => b2.likes - b1.likes
+
+    const blogsForSort = Array.from(blogs)
     
     const contentToShow =
         <div>
@@ -16,7 +18,7 @@ const Content = ( {user, logoutServiceLogout, addBlog, blogs, blogFormRef, incre
             <BlogForm createBlog={addBlog}/>
         </Togglable>
 
-        {blogs.sort(byLikes).map(blog => <Blog key={blog.id} blog={blog} user={user} addLike={increaseLikes} deleteThisBlog={deleteBlog}/>)}
+        {blogsForSort.sort(byLikes).map(blog => <Blog key={blog.id} blog={blog} user={user} addLike={increaseLikes} deleteThisBlog={deleteBlog}/>)}
         </div>
     
     return contentToShow

@@ -3,19 +3,12 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-
-import { createStore } from 'redux'
 import { Provider } from 'react-redux';
-import notificationReducer from './reducers/notificationReducer';
-
-const notifStore = createStore(notificationReducer)
-notifStore.subscribe(() => {
-  console.log('notif state:', notifStore.getState())
-})
+import store from './store';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <Provider store={notifStore}>
+  <Provider store={store}>
     <App />
   </Provider>
 );

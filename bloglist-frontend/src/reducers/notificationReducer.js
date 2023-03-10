@@ -1,12 +1,27 @@
-const notificationReducer = (state = '', action) => {
-    switch (action.type) {
-        case 'CHANGE':
+import { createSlice } from "@reduxjs/toolkit"
+
+const notificiationSlice = createSlice({
+    name: 'notification',
+    initialState: '',
+    reducers: {
+        newNotification(state, action) {
+            console.log("Notification being changed to:", action.payload)
             return action.payload
-        case 'HIDE':
+        },
+        hideNotification(state, action) {
+            console.log("Notification being changed back to: ''")
             return ''
-        default:
-            return state
+        }
+    }
+})
+
+export const { newNotification, hideNotification } = notificiationSlice.actions
+
+export const changeNotification = ( content ) => {
+    return async dispatch => {
+        dispatch(newNotification(content))
+        setTimeout(() => {dispatch(hideNotification())}, 5000)
     }
 }
 
-export default notificationReducer
+export default notificiationSlice.reducer

@@ -7,5 +7,6 @@ module.exports = {
     },
     "plugins": [
         "react", "jest", "cypress"
-    ]
+    ],
+    "parser": "babel-eslint",
 }

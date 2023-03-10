@@ -5,7 +5,7 @@ describe('notificationReducer', () => {
     test('CHANGE', () => {
         const state = ''
         const action = {
-            type: 'CHANGE',
+            type: 'notification/changeNotification',
             payload: 'CHANGE WORKS'
         }
 
@@ -18,7 +18,7 @@ describe('notificationReducer', () => {
     test('HIDE', () => {
         const state = 'Not Default State'
         const action = {
-            type: 'HIDE'
+            type: 'notification/hideNotification'
         }
 
         deepFreeze(state)
