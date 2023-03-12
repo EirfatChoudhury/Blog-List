@@ -1,15 +1,20 @@
 import { useState } from "react"
 import PropTypes from 'prop-types'
+import { logIn } from "../reducers/userReducer"
+import { useDispatch } from "react-redux"
 
-const LoginForm = ( {handleLogin} ) => {
+const LoginForm = () => {
     const [username, setUsername] = useState('') 
     const [password, setPassword] = useState('')
+    const dispatch = useDispatch()
 
     const login = (event) => {
         event.preventDefault()
-        handleLogin({username, password})
+        dispatch(logIn({username, password}))
         setUsername(null)
         setPassword(null)
+        document.getElementById('username').value = null
+        document.getElementById('password').value = null
     }
 
     return (
@@ -31,7 +36,3 @@ const LoginForm = ( {handleLogin} ) => {
 }
 
 export default LoginForm
-
-LoginForm.propTypes = {
-    handleLogin: PropTypes.func.isRequired
-}

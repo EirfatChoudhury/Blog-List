@@ -36,7 +36,7 @@ export const initialiseBlogs = () => {
     }
 }
 
-export const addThisBlog =  (content ) => {
+export const addThisBlog =  (content) => {
     return async dispatch => {
         try {
             console.log("Sending blog:", content)
@@ -50,7 +50,7 @@ export const addThisBlog =  (content ) => {
         catch (exception) {
             console.log('Failed to create blog post')
             console.log(exception)
-            dispatch(changeNotification(`Failed to add ${newBlog.title} to Bloglist`))
+            dispatch(changeNotification(`Failed to add ${content.title} to Bloglist`))
             dispatch(errorStyle())
         }
     }
