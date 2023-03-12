@@ -35,5 +35,4 @@ const del = async (id) => {
   return console.log("Deleting data")
 }
 
-// eslint-disable-next-line import/no-anonymous-default-export
 export default { setToken, getAll, create, update, del }

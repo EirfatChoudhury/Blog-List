@@ -24,8 +24,9 @@ const Blog = ({blog, user, addLike, deleteThisBlog}) => {
       title: blog.title,
       author: blog.author,
       url: blog.url,
-      likes: blog.likes+1
-    }, blog.id)
+      likes: blog.likes+1,
+      id: blog.id
+    })
   }
 
   const deleteBlog = () => {

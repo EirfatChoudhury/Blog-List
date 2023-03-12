@@ -1,83 +1,94 @@
-import { useState, useEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import LoginForm from './components/LoginForm'
 import Content from './components/Content'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
-import blogService from './services/blogs'
 import loginService from './services/login'
 import logoutService from './services/logout'
+import { useQuery, useMutation, useQueryClient } from 'react-query'
+import { getBlogs, createBlog, setToken, likeBlog, delBlog } from './requests'
+import { useNotificationValue, useNotificationDispatch } from './contexts/NotificationContext'
+import { useNotificationStyleDispatch, useNotificationStyleValue } from './contexts/NotificationStyleContext'
+import { useUserDispatch, useUserValue } from './contexts/UserContext'
 
 const App = () => {
-  const [blogs, setBlogs] = useState([])
-  const [user, setUser] = useState(null)
-  const [notifMessage, setNotifMessage] = useState(null)
-  const [notifStyle, setNotifStyle] = useState(null)
+  const queryClient = useQueryClient()
+
+  const notifMessage = useNotificationValue()
+  const notifDispatch = useNotificationDispatch()
+  const notifStyle = useNotificationStyleValue()
+  const notifStyleDispatch = useNotificationStyleDispatch()
+  const user = useUserValue()
+  const userDispatch = useUserDispatch()
+  
+  const result = useQuery('blogs', getBlogs, {retry: false, refetchOnWindowFocus: false})
+  console.log("My useQuery result:", result)
+  let blogs = []
+  if (result.data !== undefined) {
+    blogs = result.data
+    console.log("Blogs:", blogs)
+  }
+
+  const newBlogMutation = useMutation(createBlog, { onSuccess: () => queryClient.invalidateQueries('blogs')})
+  const likeBlogMutation = useMutation(likeBlog, { onSuccess: () => queryClient.invalidateQueries('blogs')})
+  const deleteBlogMutation = useMutation(delBlog, { onSuccess: () => queryClient.invalidateQueries('blogs')})
 
   const blogFormRef = useRef()
-
-  useEffect(() => {blogService.getAll().then(blogs => setBlogs(blogs))}, [])
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBloglistUser')
     if (loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON)
-      setUser(user)
-      blogService.setToken(user.token)
+      const loggedInUser = JSON.parse(loggedUserJSON)
+      userDispatch({ type: 'LOG_IN', payload: loggedInUser})
+      setToken(loggedInUser.token)
     }}, [])
 
   const handleLogin = async (userDetails) => {
     try {
-      const user = await loginService.login(userDetails)
+      const loggedInUser = await loginService.login(userDetails)
       window.localStorage.setItem(
-        'loggedBloglistUser', JSON.stringify(user)
+        'loggedBloglistUser', JSON.stringify(loggedInUser)
       )
-      blogService.setToken(user.token)
-      setUser(user)
+      setToken(loggedInUser.token)
+      userDispatch({ type: 'LOG_IN', payload: loggedInUser})
       console.log(`user with username ${userDetails.username} successfully logged in`)
     }
     catch (exception) {
       console.log('Wrong credentials')
       console.log(exception)
-      setNotifMessage(`Failed to login as ${userDetails.username}`)
-      setNotifStyle("error")
+      notifDispatch({type: 'CHANGE', payload: 'Incorrect username or password'})
+      notifStyleDispatch({ type: 'ERROR'})
     }
 
     setTimeout(() => {
-      setNotifMessage(null)
-      setNotifStyle(null)
+      notifDispatch({type: 'HIDE'})
     }, 5000);
   }
 
-  const addBlog = async (newBlog) => {
+  const addBlog = (newBlog) => {
     blogFormRef.current.toggleVisibility()
     try {
-      const returnedBlog = await blogService.create(newBlog)
-      setBlogs(blogs.concat(returnedBlog))
-      console.log("Added blog with properties:", returnedBlog)
-      setNotifMessage(`Successfully added ${newBlog.title} to Bloglist`)
-      setNotifStyle("success")
+      newBlogMutation.mutate(newBlog)
+      notifDispatch({type: 'CHANGE', payload: `Successfully added ${newBlog.title} to Bloglist`})
+      notifStyleDispatch({ type: 'SUCCESS'})
     }
     catch (exception) {
       console.log('Failed to create blog post')
       console.log(exception)
-      setNotifMessage(`Failed to add ${newBlog.title} to Bloglist`)
-      setNotifStyle("error")
+      notifDispatch({type: 'CHANGE', payload: `Failed to add ${newBlog.title} to Bloglist`})
+      notifStyleDispatch({ type: 'ERROR'})
     }
 
     setTimeout(() => {
-      setNotifMessage(null)
-      setNotifStyle(null)
+      notifDispatch({type: 'HIDE'})
     }, 5000);
 
   }
 
   const increaseLikes = async (updatedBlog, id) => {
-    const tempBlogs = blogs.filter(blog => blog.id !== id)
-
+    console.log(typeof(id))
     try {
-      const returnedBlog = await blogService.update(updatedBlog, id)
-      setBlogs(tempBlogs.concat(returnedBlog))
-      console.log("Updated blog to", returnedBlog)
+      likeBlogMutation.mutate(updatedBlog, id)
     }
     catch (exception) {
       console.log('Failed to update blog post')
@@ -87,9 +98,7 @@ const App = () => {
 
   const deleteBlog = async (id) => {
     try {
-      await blogService.del(id)
-      setBlogs(blogs.filter(blog => blog.id !== id))
-      console.log("Blog deleted")
+      deleteBlogMutation.mutate(id)
     }
     catch (exception) {
       console.log("Failed to delete blog")
