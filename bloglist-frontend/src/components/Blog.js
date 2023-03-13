@@ -1,7 +1,15 @@
 import Togglable from './Togglable'
 import PropTypes from 'prop-types'
+import { useUserValue } from '../contexts/UserContext'
+import { useMutation, useQueryClient } from 'react-query'
+import { likeBlog, delBlog } from '../requests'
 
-const Blog = ({blog, user, addLike, deleteThisBlog}) => {
+const Blog = ({blog}) => {
+  const queryClient = useQueryClient()
+  const user = useUserValue()
+  const likeBlogMutation = useMutation(likeBlog, { onSuccess: () => queryClient.invalidateQueries('blogs') })
+  const deleteBlogMutation = useMutation(delBlog, { onSuccess: () => queryClient.invalidateQueries('blogs') })
+
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -19,8 +27,7 @@ const Blog = ({blog, user, addLike, deleteThisBlog}) => {
 
   const increaseLikes = () => {
     console.log("Increasing likes on this blog", blog)
-
-    addLike({
+    likeBlogMutation.mutate({
       title: blog.title,
       author: blog.author,
       url: blog.url,
@@ -32,7 +39,7 @@ const Blog = ({blog, user, addLike, deleteThisBlog}) => {
   const deleteBlog = () => {
     if (window.confirm(`Deleting blog with title: ${blog.title}`)) {
       console.log("Deleting this blog", blog)
-      deleteThisBlog(blog.id)
+      deleteBlogMutation.mutate(blog.id)
     }
   }
 
@@ -57,8 +64,5 @@ const Blog = ({blog, user, addLike, deleteThisBlog}) => {
 export default Blog
 
 Blog.propTypes = {
-  blog: PropTypes.object.isRequired,
-  user: PropTypes.object.isRequired,
-  addLike: PropTypes.func.isRequired,
-  deleteThisBlog: PropTypes.func.isRequired
+  blog: PropTypes.object.isRequired
 }

@@ -1,17 +1,39 @@
 import { useState } from "react"
-import PropTypes from 'prop-types'
+import { useQueryClient, useMutation } from "react-query"
+import { useNotificationDispatch } from "../contexts/NotificationContext"
+import { useNotificationStyleDispatch } from "../contexts/NotificationStyleContext"
+import { createBlog } from "../requests"
 
-const BlogForm = ( {createBlog} ) => {
+const BlogForm = ( {toggle} ) => {
     const [title, setTitle] = useState("") 
     const [author, setAuthor] = useState("")
     const [url, setUrl] = useState("")
+    const queryClient = useQueryClient()
+    const newBlogMutation = useMutation(createBlog, { onSuccess: () => queryClient.invalidateQueries('blogs') })
+    const notifDispatch = useNotificationDispatch()
+    const notifStyleDispatch = useNotificationStyleDispatch()
 
     const addBlog = (event) => {
         event.preventDefault()
-        createBlog({title, author, url})
+        toggle()
+        const result = newBlogMutation.mutate({title, author, url})
         setTitle(null)
         setAuthor(null)
         setUrl(null)
+        document.getElementById('title').value = null
+        document.getElementById('author').value = null
+        document.getElementById('url').value = null
+        if ( result === false ) {
+            notifDispatch({type: 'CHANGE', payload: `Failed to add ${title} to Bloglist`})
+            notifStyleDispatch({ type: 'ERROR'})
+        }
+        else {
+            notifDispatch({type: 'CHANGE', payload: `Successfully added ${title} to Bloglist`})
+            notifStyleDispatch({ type: 'SUCCESS'})
+        }
+        setTimeout(() => {
+            notifDispatch({type: 'HIDE'})
+        }, 5000);
     }
     
     return (
@@ -33,7 +55,3 @@ const BlogForm = ( {createBlog} ) => {
 }
 
 export default BlogForm
-
-BlogForm.propTypes = {
-    createBlog: PropTypes.func.isRequired
-}

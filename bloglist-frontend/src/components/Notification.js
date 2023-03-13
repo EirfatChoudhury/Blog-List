@@ -1,4 +1,10 @@
-const Notification = ({ message, style }) => {
+import { useNotificationValue } from "../contexts/NotificationContext"
+import { useNotificationStyleValue } from "../contexts/NotificationStyleContext"
+
+const Notification = () => {
+    const message = useNotificationValue()
+    const style = useNotificationStyleValue()
+
     let notifStyle = {
       color: "black",
       background: "lightgrey",
