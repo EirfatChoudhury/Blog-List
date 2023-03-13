@@ -33,9 +33,12 @@ const Blog = ({blog}) => {
   }
 
   const deleteBlog = () => {
-    if (window.confirm(`Deleting blog with title: ${blog.title}`)) {
-      console.log("Deleting this blog", blog)
-      dispatch(deleteThisBlog(blog.id))
+    if (blog.user === user.id) {
+      console.log("Same user")
+      if (window.confirm(`Deleting blog with title: ${blog.title}`)) {
+        console.log("Deleting this blog", blog)
+        dispatch(deleteThisBlog(blog.id))
+      }
     }
   }
 
