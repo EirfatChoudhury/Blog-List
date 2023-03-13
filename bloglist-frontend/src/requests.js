@@ -45,8 +45,11 @@ export const likeBlog = async ( object ) => {
 
 export const delBlog = async ( id ) => {
     try {
+        const config = {
+            headers: { Authorization: token },
+        }
         console.log("Sending axios request to delete blog with id:", id)
-        await axios.delete(baseUrl + "/blogs/" + id)
+        await axios.delete(baseUrl + "/blogs/" + id, config)
         console.log("Blog deleted")
     }
     catch (exception) {
