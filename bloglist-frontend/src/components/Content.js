@@ -1,11 +1,12 @@
 import { useRef } from 'react'
+import { useSelector } from 'react-redux'
+import { Link } from 'react-router-dom'
 import BlogForm from './BlogForm'
-import LogoutButton from "./LogoutButton"
 import Togglable from './Togglable'
-import Blog from "./Blog"
-import PropTypes from 'prop-types'
 
-const Content = ( {user, logoutServiceLogout, blogs } ) => {    
+const Content = () => {
+    const blogs = useSelector(state => state.blogs)
+
     const byLikes = (b1, b2) => b2.likes - b1.likes
 
     const blogsForSort = Array.from(blogs)
@@ -15,25 +16,16 @@ const Content = ( {user, logoutServiceLogout, blogs } ) => {
         blogFormRef.current.toggleVisibility()
     }
     
-    const contentToShow =
+    return (
         <div>
         <h2>Blogs</h2>
-        {user.username} logged in <LogoutButton onClick={logoutServiceLogout}/>
-
         <Togglable buttonLabel="add blog" ref={blogFormRef}>
             <BlogForm toggle={toggle}/>
         </Togglable>
 
-        {blogsForSort.sort(byLikes).map(blog => <Blog key={blog.id} blog={blog}/>)}
+        {blogsForSort.sort(byLikes).map(blog => <p key={blog.id}><Link to={`/blogs/${blog.id}`}>{blog.title} - {blog.author}</Link></p>)}
         </div>
-    
-    return contentToShow
+    )
 }
 
 export default Content
-
-Content.propTypes = {
-    user: PropTypes.object.isRequired,
-    logoutServiceLogout: PropTypes.func.isRequired,
-    blogs: PropTypes.array.isRequired,
-}

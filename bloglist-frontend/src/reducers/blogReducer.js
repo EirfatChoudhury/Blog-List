@@ -19,14 +19,14 @@ const blogSlice = createSlice({
             console.log("Deleting blog from state:", state.pop(state.find(blog => blog.id === action.payload)))
             return state
         },
-        updateLikedBlog(state, action) {
-            console.log("Updating state to increase like on blog:", action.payload)
+        updateBlog(state, action) {
+            console.log("Updating state of blog:", action.payload)
             return state.map(blog => blog.id !== action.payload.id ? blog : action.payload)
         }
     }
 })
 
-export const { getBlogs, appendBlog, removeBlog, updateLikedBlog } = blogSlice.actions
+export const { getBlogs, appendBlog, removeBlog, updateBlog } = blogSlice.actions
 
 export const initialiseBlogs = () => {
     return async dispatch => {
@@ -78,11 +78,27 @@ export const likeThisBlog = ( content, id ) => {
             console.log("Sending blog to update like by one:", content)
             const updatedBlog = await blogService.update(content, id)
             console.log("Returned blog with like updated:", updatedBlog)
-            dispatch(updateLikedBlog(updatedBlog))
+            dispatch(updateBlog(updatedBlog))
             console.log("Updated blog state to increase like on blog:", updatedBlog)
         }
         catch (exception) {
             console.log('Failed to update blog post')
+            console.log(exception)
+        }
+    }
+}
+
+export const commentOnThisBlog = ( content, id ) => {
+    return async dispatch => {
+        try {
+            console.log("Sending blog to update with comment:", content)
+            const updatedBlog = await blogService.update(content, id)
+            console.log("Returned blog with comment updated:", updatedBlog)
+            dispatch(updateBlog(updatedBlog))
+            console.log("Updated blog state to include new comment:", updatedBlog.comments)
+        }
+        catch (exception) {
+            console.log("Failed to update blog post")
             console.log(exception)
         }
     }

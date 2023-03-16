@@ -1,7 +1,10 @@
-POST http://localhost:3003/api/users
+PUT  http://localhost:3003/api/blogs/6411fbd5e950e9797a2c9050
 Content-Type: application/json
 
 {
-    "username":"Test",
-    "password":"Test"
+    "title": "TESTING COMMENT",
+    "author": "TESTING COMMENT",
+    "url": "TESTING COMMENT",
+    "likes": 5,
+    "comments": {"userID":2, "comment":"WORK"}
 }

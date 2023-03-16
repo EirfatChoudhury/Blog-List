@@ -1,11 +1,7 @@
-import PropTypes from 'prop-types'
+import logoutServive from '../services/logout'
 
-const LogoutButton = ( {onClick} ) => (
-    <button onClick={onClick}> Logout </button>
+const LogoutButton = () => (
+    <button onClick={logoutServive.logout}> Logout </button>
 )
 
 export default LogoutButton
-
-LogoutButton.propTypes = {
-    onClick: PropTypes.func.isRequired
-}

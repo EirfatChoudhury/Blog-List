@@ -2,6 +2,7 @@ const blogsRouter = require("express").Router()
 const Blog = require("../models/blog")
 const User = require('../models/user')
 const jwt = require('jsonwebtoken')
+const logger = require('../utils/logger')
 
 const getTokenFrom = request => {
   const authorisation = request.get('authorization')
@@ -57,11 +58,11 @@ blogsRouter.delete('/:id', async (request, response) => {
 })
 
 blogsRouter.put('/:id', async (request, response) => {
-  const { title, author, url, likes } = request.body
+  const { title, author, url, likes, comments } = request.body
 
   await Blog.findByIdAndUpdate(
     request.params.id,
-    { title, author, url, likes },
+    { title, author, url, likes, $push: { comments } },
     { new: true, runValidators: true, context: 'query' }
   )
 

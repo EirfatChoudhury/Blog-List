@@ -1,39 +1,36 @@
 import PropTypes from 'prop-types'
-import { useState } from "react"
 import { useDispatch } from "react-redux"
 import { addThisBlog } from "../reducers/blogReducer"
+import { useField } from '../hooks'
 
 const BlogForm = ( {toggle} ) => {
-    const [title, setTitle] = useState("") 
-    const [author, setAuthor] = useState("")
-    const [url, setUrl] = useState("")
+    const title = useField('text')
+    const author = useField('text')
+    const url = useField('text')
     const dispatch = useDispatch()
 
     const addBlog = ( event ) => {
         event.preventDefault()
         toggle()
-        dispatch(addThisBlog({title, author, url}))
-        setTitle(null)
-        setAuthor(null)
-        setUrl(null)
-        document.getElementById('title').value = null
-        document.getElementById('author').value = null
-        document.getElementById('url').value = null
+        dispatch(addThisBlog({title: title.inputProperties.value, author: author.inputProperties.value, url: url.inputProperties.value}))
+        title.reset()
+        author.reset()
+        url.reset()
     }
     
     return (
     <div>
         <form onSubmit={addBlog}>
             <div>
-                title: <input id="title" placeholder="title" onChange={({ target }) => setTitle(target.value)}></input>
+                title: <input id="title" placeholder="title" {...title.inputProperties}></input>
             </div>
             <div>
-                author: <input id="author" placeholder="author" onChange={({ target }) => setAuthor(target.value)}></input>
+                author: <input id="author" placeholder="author" {...author.inputProperties}></input>
             </div>
             <div>
-                url: <input id="url" placeholder="url" onChange={({ target }) => setUrl(target.value)}></input>
+                url: <input id="url" placeholder="url" {...url.inputProperties}></input>
             </div>
-            <button id="create-button" type="submit">create</button>
+            <button type="submit">create</button>
         </form>
     </div>
     )
