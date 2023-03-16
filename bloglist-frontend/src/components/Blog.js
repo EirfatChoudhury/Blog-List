@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { deleteThisBlog, likeThisBlog, commentOnThisBlog } from '../reducers/blogReducer'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useField } from '../hooks'
+import { Table, Form, Button } from 'react-bootstrap'
 
 const Blog = () => {
   const dispatch = useDispatch()
@@ -18,10 +19,8 @@ const Blog = () => {
     )
   }
 
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    marginBottom: 5
+  const margin = {
+    marginTop: 20
   }
 
   const increaseLikes = () => {
@@ -64,35 +63,78 @@ const Blog = () => {
   }
 
   return (
-    <div style={blogStyle} className={blog}>
+    <div style={margin}>
         <h2>Title: {blog.title}</h2>
+
+        {!blog.user.username ? <p>Added by {user.username}</p> : <p>Added by {blog.user.username}</p>}
 
         {blog.user.id === user.id || blog.user === user.id ? 
           <p>
-            <button onClick={deleteBlog}>delete</button>
+            <Button onClick={deleteBlog}>Delete</Button>
           </p> :
           null
         }
 
-        <p>Author: {blog.author}</p>
-        <p>url: {blog.url}</p>
-        <p>
-          likes: {blog.likes}
-          <button onClick={increaseLikes}>like</button>
-        </p>
-
-        {!blog.user.username ? <p>Added by {user.username}</p> : <p>Added by {blog.user.username}</p>}
+        <Table striped>
+          <tbody>
+            <tr key={'author'}>
+              <td className='align-middle'>
+                Author
+              </td>
+              <td className='align-middle'>
+                {blog.author}
+              </td>
+            </tr>
+            <tr key={'url'}>
+              <td className='align-middle'>
+                URL
+              </td>
+              <td className='align-middle'>
+                {blog.url}
+              </td>
+            </tr>
+            <tr key={'likes'}>
+              <td className='align-middle'>
+                Likes
+              </td>
+              <td className='align-middle'>
+                {blog.likes} <Button onClick={increaseLikes}>like</Button>
+              </td>
+            </tr>
+          </tbody>
+        </Table>
 
         <h3>Comments</h3>
-        <form onSubmit={addComment}>
-          <input id='comment' {...comment.inputProperties}/>
-          <button type='submit'>Add comment</button>
-        </form>
-        {
-          blog.comments.length === 0 ? 
-            <p>No comments</p> : 
-            blog.comments.map(comment => <p key={comment.id}>{comment.username} : {comment.comment}</p>)
-        }
+        <Form onSubmit={addComment}>
+          <Form.Group>
+            <Form.Control id='comment' {...comment.inputProperties} />
+            <div style={margin}>
+              <Button type='submit'>Add comment</Button>
+            </div>
+          </Form.Group>
+        </Form>
+        
+        <div style={margin}>
+          <Table striped>
+            <tbody>
+              {blog.comments.length === 0 ?
+                <tr key={'no-comments'}>
+                  <td className='align-middle'>
+                    No Comments
+                  </td>
+                </tr> :
+                blog.comments.map(comment => 
+                <tr key={comment.id}>
+                  <td className='align-middle'>
+                    {comment.username}
+                  </td>
+                  <td className='align-middle'>
+                    {comment.comment}
+                  </td>
+                </tr>)}
+            </tbody>
+          </Table>
+        </div>
     </div>
   )
 }

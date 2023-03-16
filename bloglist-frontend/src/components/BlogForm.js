@@ -2,6 +2,7 @@ import PropTypes from 'prop-types'
 import { useDispatch } from "react-redux"
 import { addThisBlog } from "../reducers/blogReducer"
 import { useField } from '../hooks'
+import { Form, Button } from 'react-bootstrap'
 
 const BlogForm = ( {toggle} ) => {
     const title = useField('text')
@@ -18,20 +19,34 @@ const BlogForm = ( {toggle} ) => {
         url.reset()
     }
     
+    const margin = {
+        marginTop: 20
+    }
+
     return (
     <div>
-        <form onSubmit={addBlog}>
-            <div>
-                title: <input id="title" placeholder="title" {...title.inputProperties}></input>
-            </div>
-            <div>
-                author: <input id="author" placeholder="author" {...author.inputProperties}></input>
-            </div>
-            <div>
-                url: <input id="url" placeholder="url" {...url.inputProperties}></input>
-            </div>
-            <button type="submit">create</button>
-        </form>
+        <Form onSubmit={addBlog}>
+            <Form.Group>
+                <Form.Label>
+                    Title
+                </Form.Label>
+                <Form.Control id="title" placeholder="title" {...title.inputProperties} />
+
+                <Form.Label>
+                    Author
+                </Form.Label>
+                <Form.Control id="author" placeholder="author" {...author.inputProperties} />
+
+                <Form.Label>
+                    URL
+                </Form.Label>
+                <Form.Control id="url" placeholder="url" {...url.inputProperties} />
+
+                <div style={margin}>
+                    <Button type="submit">Create</Button>
+                </div>
+            </Form.Group>
+        </Form>
     </div>
     )
 }

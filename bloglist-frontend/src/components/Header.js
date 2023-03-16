@@ -5,9 +5,13 @@ import LogoutButton from "./LogoutButton"
 const Header = () => {
   const user = useSelector(state => state.user)
 
+  const margin = {
+    marginTop: 20
+  }
+
   if (!user) {
     return(
-      <div>
+      <div style={margin}>
       <h2>Bloglist</h2>
       <Notification/>
     </div>
@@ -15,10 +19,10 @@ const Header = () => {
   }
 
   return(
-    <div>
+    <div style={margin}>
       <h2>Bloglist</h2>
       <Notification/>
-      {user.username} logged in
+      <p style={margin}>{user.username} logged in</p>
       <LogoutButton/>
     </div>
   )

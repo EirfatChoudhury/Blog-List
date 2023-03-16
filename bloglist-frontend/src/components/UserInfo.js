@@ -1,5 +1,6 @@
 import { useParams, Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
+import { Table } from 'react-bootstrap'
 
 const UserInfo = () => {
     const id = useParams().id
@@ -15,8 +16,27 @@ const UserInfo = () => {
         <div>
             <h2>User: {user.username}</h2>
 
-            <h4>Added blogs</h4>
-            {user.blogs.length >= 1 ? user.blogs.map(blog => <li key={blog.id}><Link to={`/blogs/${blog.id}`}>{blog.title}</Link></li>) : <div>No blogs Added</div>}
+            <Table striped>
+                <tbody>
+                    <tr key={'added-blogs-header'}>
+                        <th>
+                            Added Blogs
+                        </th>
+                    </tr>
+                    {user.blogs.length >= 1 ? 
+                    user.blogs.map(blog => 
+                    <tr key={blog.id}>
+                        <td className='align-middle'>
+                            <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
+                        </td>
+                    </tr>) : 
+                    <tr key={'no-blogs'}>
+                        <td className='align-middle'>
+                            No Blogs Added
+                        </td>
+                    </tr>}
+                </tbody>
+            </Table>
         </div>
     )
 }

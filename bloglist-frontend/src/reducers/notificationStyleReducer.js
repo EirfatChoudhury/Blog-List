@@ -8,7 +8,7 @@ const notificationStyleSlice = createSlice({
             return 'success'
         },
         errorStyle(state, action) {
-            return 'error'
+            return 'danger'
         }
     }
 })
