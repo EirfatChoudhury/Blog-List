@@ -36,10 +36,10 @@ const Content = () => {
                 {!user ? 
                 <div> 
                     <p style={margin}>Log in to add Blogs</p>
-                    <h2>Blogs</h2>
+                    <h3>Blogs</h3>
                 </div> : 
                 <div>
-                    <h2>Blogs</h2>
+                    <h3>Blogs</h3>
                     <Togglable buttonLabel="Add blog" ref={blogFormRef}>
                         <BlogForm toggle={toggle}/>
                     </Togglable>

@@ -104,4 +104,23 @@ export const commentOnThisBlog = ( content, id ) => {
     }
 }
 
+export const deleteCommentOnThisBlog = ( blogId, commentId ) => {
+    return async dispatch => {
+        try {
+            console.log("Creating object with commentId:", commentId)
+            const confirmationObject = { commentDelete: commentId }
+            console.log("Created object to confirm deletion in backend with commentID:", confirmationObject)
+            console.log("Sending comment to be deleted from blog with ID:", blogId)
+            const updatedBlog = await blogService.update(confirmationObject, blogId)
+            console.log("Returned blog with comment deleted", updatedBlog)
+            dispatch(updateBlog(updatedBlog))
+            console.log("Updated blog state to exclude deleted comment:", updatedBlog.comments)
+        }
+        catch (exception) {
+            console.log("Failed to delete comment from blog post")
+            console.log(exception)
+        }
+    }
+}
+
 export default blogSlice.reducer

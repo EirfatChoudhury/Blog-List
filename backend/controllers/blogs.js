@@ -53,18 +53,35 @@ blogsRouter.get('/:id', async (request, response) => {
 })
   
 blogsRouter.delete('/:id', async (request, response) => {
-    await Blog.findByIdAndRemove(request.params.id)
-    response.status(204).end()
+  const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)
+  if (!decodedToken.id) {
+    return response.status(401).json({ error: 'token invalid' })
+  }
+
+  await Blog.findByIdAndRemove(request.params.id)
+  response.status(204).end()
 })
 
 blogsRouter.put('/:id', async (request, response) => {
-  const { title, author, url, likes, comments } = request.body
+  const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)
+  if (!decodedToken.id) {
+    return response.status(401).json({ error: 'token invalid' })
+  }
+  const { title, author, url, likes, comments, commentDelete } = request.body
 
   await Blog.findByIdAndUpdate(
     request.params.id,
     { title, author, url, likes, $push: { comments } },
     { new: true, runValidators: true, context: 'query' }
   )
+
+  if (commentDelete) {
+    console.log("TRUE")
+    await Blog.findByIdAndUpdate(
+      request.params.id,
+      { $pull: { comments: { id:commentDelete } }}
+    )
+  }
 
   const blog = await Blog.findById(request.params.id)
   response.json(blog)

@@ -7,7 +7,7 @@ const UsersTable = () => {
 
     return (
         <div>
-            <h2>Users</h2>
+            <h3>Users</h3>
             <Table striped>
                 <tbody>
                     <tr key={'users-number-header'}>

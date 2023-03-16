@@ -14,7 +14,7 @@ const UserInfo = () => {
 
     return (
         <div>
-            <h2>User: {user.username}</h2>
+            <h3>User: {user.username}</h3>
 
             <Table striped>
                 <tbody>

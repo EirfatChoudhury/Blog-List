@@ -19,6 +19,7 @@ export const { newNotification, hideNotification } = notificiationSlice.actions
 
 export const changeNotification = ( content ) => {
     return async dispatch => {
+        window.scrollTo(0, 0)
         dispatch(newNotification(content))
         setTimeout(() => {dispatch(hideNotification())}, 5000)
     }

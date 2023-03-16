@@ -6,7 +6,7 @@ import { Form, Button } from 'react-bootstrap'
 
 const LoginForm = () => {
     const username = useField('text')
-    const password = useField('text')
+    const password = useField('password')
     const dispatch = useDispatch()
 
     const login = (event) => {
@@ -20,11 +20,25 @@ const LoginForm = () => {
         marginTop: 20
     }
 
+    const showHide = () => {
+        const passwords = document.getElementsByClassName("password")
+
+        for (let i = 0 ; i < passwords.length; i++) {
+            if (passwords[i].type === "password") {
+                passwords[i].type = "text"
+            } else {
+                passwords[i].type = "password"
+            }
+        }
+    }
+
+
+
     return (
         <div>
             <Togglable buttonLabel='Login'>
                 <div>
-                    <h2>Log in to application</h2>
+                    <h3>Log in to application</h3>
                     <div>
                         <Form onSubmit={login}>
                             <Form.Group>
@@ -32,9 +46,11 @@ const LoginForm = () => {
                                 <Form.Control {...username.inputProperties} />
 
                                 <Form.Label>Password</Form.Label>
-                                <Form.Control {...password.inputProperties} />
+                                <Form.Control className="password" {...password.inputProperties} />
 
                                 <Button style={margin} variant="primary" type="submit">Login</Button>
+
+                                <Form.Check type="checkbox" label="Show password" onClick={showHide}/>
                             </Form.Group>
                         </Form>
                     </div>

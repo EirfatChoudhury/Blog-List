@@ -1,7 +1,9 @@
 import { Link } from 'react-router-dom'
 import { Navbar, Nav } from 'react-bootstrap'
+import { useSelector } from 'react-redux'
 
 const NavigationBar = () => {
+    const user = useSelector(state => state.user)
     const padding = {
         padding: 5
     }
@@ -21,6 +23,11 @@ const NavigationBar = () => {
                         <Nav.Link href="#" as="span">
                             <Link style={padding} to="/users">Users</Link>
                         </Nav.Link>
+                        {user ? null : 
+                        <Nav.Link href="#" as="span">
+                            <Link style={padding} to="/register">Register</Link>
+                        </Nav.Link>
+                        }
                     </Nav>
                 </Navbar.Collapse>
             </Navbar>

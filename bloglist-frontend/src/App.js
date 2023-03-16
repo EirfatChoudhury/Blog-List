@@ -11,6 +11,7 @@ import UsersTable from './components/UsersTable'
 import UserInfo from './components/UserInfo'
 import Blog from './components/Blog'
 import NavigationBar from './components/NavigationBar'
+import RegisterForm from './components/RegisterForm'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -35,6 +36,7 @@ const App = () => {
             <Route path='/users' element={<UsersTable />} />
             <Route path='/users/:id' element={<UserInfo />} />
             <Route path='/blogs/:id' element={<Blog />} />
+            <Route path='/register' element={<RegisterForm />} />
           </Routes>
         </Router>
       </div>

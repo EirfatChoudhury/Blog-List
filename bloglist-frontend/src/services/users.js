@@ -7,4 +7,10 @@ const getAll = () => {
     return request.then(response => response.data)
 }
 
-export default { getAll }
+const create = ( userToBeCreated ) => {
+    console.log("Sending axios request to create new user with info:", userToBeCreated)
+    const request = axios.post(baseUrl, userToBeCreated)
+    return request.then(response => response.data)
+}
+
+export default { getAll, create }

@@ -1,8 +1,10 @@
 import { useDispatch, useSelector } from 'react-redux'
-import { deleteThisBlog, likeThisBlog, commentOnThisBlog } from '../reducers/blogReducer'
+import { deleteThisBlog, likeThisBlog, commentOnThisBlog, deleteCommentOnThisBlog } from '../reducers/blogReducer'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useField } from '../hooks'
 import { Table, Form, Button } from 'react-bootstrap'
+import { changeNotification } from '../reducers/notificationReducer'
+import { errorStyle } from '../reducers/notificationStyleReducer'
 
 const Blog = () => {
   const dispatch = useDispatch()
@@ -13,7 +15,7 @@ const Blog = () => {
   const user = useSelector(state => state.user)
   const comment = useField('text')
 
-  if (!blog || !user) {
+  if (!blog) {
     return(
       <div>Loading data...</div>
     )
@@ -24,6 +26,9 @@ const Blog = () => {
   }
 
   const increaseLikes = () => {
+    if (!user) {
+      return navigate('/login')
+    }
     console.log("Increasing likes on this blog", blog)
     dispatch(likeThisBlog({
       title: blog.title,
@@ -51,7 +56,18 @@ const Blog = () => {
   }
 
   const addComment = (event) => {
+    if (!user) {
+      return navigate('/login')
+    }
+
     event.preventDefault()
+
+    if (comment.inputProperties.value === '') {
+      dispatch(changeNotification("Comment must be at least 1 character"))
+      dispatch(errorStyle())
+      return null
+    }
+
     const commentId = Date.now()
     console.log("Adding comment:", comment.inputProperties.value)
     dispatch(commentOnThisBlog(
@@ -62,17 +78,25 @@ const Blog = () => {
     comment.reset()
   }
 
+  const deleteComment = (event, blogId, commentId) => {
+    event.preventDefault()
+    console.log("blogId:", blogId, "commentId:", commentId)
+    dispatch(deleteCommentOnThisBlog(blogId, commentId))
+  }
+
   return (
     <div style={margin}>
-        <h2>Title: {blog.title}</h2>
-
+        <h3>Title: {blog.title}</h3>
+        
         {!blog.user.username ? <p>Added by {user.username}</p> : <p>Added by {blog.user.username}</p>}
 
-        {blog.user.id === user.id || blog.user === user.id ? 
-          <p>
-            <Button onClick={deleteBlog}>Delete</Button>
-          </p> :
-          null
+        {!user ? 
+          null : 
+          blog.user.id === user.id || blog.user === user.id ? 
+            <p>
+              <Button onClick={deleteBlog}>Delete</Button>
+            </p> :
+            null
         }
 
         <Table striped>
@@ -129,7 +153,12 @@ const Blog = () => {
                     {comment.username}
                   </td>
                   <td className='align-middle'>
-                    {comment.comment}
+                    {comment.comment} 
+                    {!user ? null : 
+                      user.id === comment.userId ?
+                        <Button onClick={(event) => deleteComment(event, blog.id, comment.id)}>Delete Comment</Button> :
+                        null
+                    }
                   </td>
                 </tr>)}
             </tbody>

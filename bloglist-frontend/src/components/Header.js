@@ -22,8 +22,7 @@ const Header = () => {
     <div style={margin}>
       <h2>Bloglist</h2>
       <Notification/>
-      <p style={margin}>{user.username} logged in</p>
-      <LogoutButton/>
+      <p style={margin}>{user.username} logged in <LogoutButton/></p>
     </div>
   )
 }
