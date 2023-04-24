@@ -1,8 +1,6 @@
 const logout = async (request, response) => {
-    console.log("logging out")
+    console.log("Clearing LoggedBloglistuser from window.localStorage")
     window.localStorage.clear("LoggedBloglistUser")
-    console.log("logged out")
-    return window.location.reload()
 }
 
 export default { logout }

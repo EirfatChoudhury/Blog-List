@@ -1,12 +1,14 @@
-import logoutServive from '../services/logout'
 import { useNavigate } from 'react-router-dom'
 import { Button } from 'react-bootstrap'
+import { useDispatch } from 'react-redux'
+import { logOut } from '../reducers/userReducer'
 
 const LogoutButton = () => {
     const navigate = useNavigate()
+    const dispatch = useDispatch()
 
     const handleLogout = () => {
-        logoutServive.logout()
+        dispatch(logOut())
         navigate("/login")
     }
 

@@ -5,6 +5,7 @@ import { useField } from '../hooks'
 import { Table, Form, Button } from 'react-bootstrap'
 import { changeNotification } from '../reducers/notificationReducer'
 import { errorStyle } from '../reducers/notificationStyleReducer'
+import { useEffect } from 'react'
 
 const Blog = () => {
   const dispatch = useDispatch()
@@ -12,6 +13,7 @@ const Blog = () => {
   const id = useParams().id
   const blogs = useSelector(state => state.blogs)
   const blog = blogs.find(blog => blog.id === id)
+  const users = useSelector(state => state.users)
   const user = useSelector(state => state.user)
   const comment = useField('text')
 
@@ -20,6 +22,11 @@ const Blog = () => {
       <div>Loading data...</div>
     )
   }
+
+  const creator = users.filter(user => user.id === blog.user || user.id === blog.user.id)[0].username
+
+  console.log(creator)
+  console.log(blog)
 
   const margin = {
     marginTop: 20
@@ -88,7 +95,7 @@ const Blog = () => {
     <div style={margin}>
         <h3>Title: {blog.title}</h3>
         
-        {!blog.user.username ? <p>Added by {user.username}</p> : <p>Added by {blog.user.username}</p>}
+        <p>Added by {creator}</p>
 
         {!user ? 
           null : 

@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import blogService from "../services/blogs"
 import loginService from "../services/login"
+import logoutService from "../services/logout"
 import { changeNotification } from "./notificationReducer";
 import { errorStyle } from "./notificationStyleReducer";
 
@@ -11,12 +12,16 @@ const userSlice = createSlice({
         setLoggedIn(state, action) {
             console.log("Setting user state as user")
             return action.payload
+        },
+        setLoggedOut(state, action) {
+            console.log("Setting user state to empty")
+            return null
         }
     }
 })
 
 
-export const { setLoggedIn } = userSlice.actions
+export const { setLoggedIn, setLoggedOut } = userSlice.actions
 
 export const checkLoggedIn = () => {
     return async dispatch => {
@@ -64,5 +69,15 @@ export const logIn = (userDetails) => {
         }
     }
 }
+
+export const logOut = () => {
+    return dispatch => {
+        console.log("Logging out")
+        logoutService.logout()
+        console.log("LoggedBloglistUser cleared from storage")
+        dispatch(setLoggedOut())
+        console.log("Logged out")
+    }
+} 
 
 export default userSlice.reducer

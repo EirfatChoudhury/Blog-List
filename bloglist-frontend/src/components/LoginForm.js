@@ -48,9 +48,9 @@ const LoginForm = () => {
                                 <Form.Label>Password</Form.Label>
                                 <Form.Control className="password" {...password.inputProperties} />
 
-                                <Button style={margin} variant="primary" type="submit">Login</Button>
-
                                 <Form.Check type="checkbox" label="Show password" onClick={showHide}/>
+
+                                <Button style={margin} variant="primary" type="submit">Login</Button>
                             </Form.Group>
                         </Form>
                     </div>
